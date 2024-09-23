@@ -23,6 +23,7 @@ import {
   SortableProperties,
   usePagePropertiesManager,
 } from '../table';
+import { DocModeRow } from './doc-mode-row';
 import * as styles from './info-modal.css';
 import { LinksRow } from './links-row';
 import { TagsRow } from './tags-row';
@@ -139,6 +140,7 @@ export const InfoTable = ({
         </>
       ) : null}
       <TagsRow docId={docId} readonly={readonly} />
+      <DocModeRow docId={docId} />
       <SortableProperties>
         {properties =>
           properties.length ? (
