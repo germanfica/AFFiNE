@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 
-import { type DBSchemaBuilder, f } from '../../../orm';
+import { type DBSchemaBuilder, f, type UpdateEntityInput } from '../../../orm';
 
 export const AFFiNE_WORKSPACE_DB_SCHEMA = {
   folders: {
@@ -10,8 +10,17 @@ export const AFFiNE_WORKSPACE_DB_SCHEMA = {
     type: f.string(),
     index: f.string(),
   },
+  docConfiguration: {
+    id: f.string().primaryKey(),
+    primaryMode: f.string().optional(),
+    edgelessColorTheme: f.string().optional(),
+  },
 } as const satisfies DBSchemaBuilder;
 export type AFFiNE_WORKSPACE_DB_SCHEMA = typeof AFFiNE_WORKSPACE_DB_SCHEMA;
+
+export type DocConfiguration = UpdateEntityInput<
+  AFFiNE_WORKSPACE_DB_SCHEMA['docConfiguration']
+>;
 
 export const AFFiNE_WORKSPACE_USERDATA_DB_SCHEMA = {
   favorite: {

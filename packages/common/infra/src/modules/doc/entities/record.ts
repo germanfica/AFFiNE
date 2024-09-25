@@ -3,6 +3,7 @@ import type { DocMeta } from '@blocksuite/affine/store';
 
 import { Entity } from '../../../framework';
 import { LiveData } from '../../../livedata';
+import type { DocConfiguration } from '../../db';
 import type { DocsStore } from '../stores/docs';
 
 /**
@@ -18,6 +19,11 @@ export class DocRecord extends Entity<{ id: string }> {
 
   meta$ = LiveData.from<Partial<DocMeta>>(
     this.docsStore.watchDocMeta(this.id),
+    {}
+  );
+
+  configuration$ = LiveData.from<DocConfiguration | null>(
+    this.docsStore.watchDocConfiguration(this.id),
     {}
   );
 

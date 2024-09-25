@@ -1,15 +1,16 @@
 import type { DocMode } from '@blocksuite/affine/blocks';
 import type { DocMeta } from '@blocksuite/affine/store';
 import { isEqual } from 'lodash-es';
-import { distinctUntilChanged, Observable } from 'rxjs';
+import { distinctUntilChanged, map, Observable } from 'rxjs';
 
 import { Store } from '../../../framework';
-import type { WorkspaceLocalState, WorkspaceService } from '../../workspace';
+import type { DocConfiguration, WorkspaceDBService } from '../../db';
+import type { WorkspaceService } from '../../workspace';
 
 export class DocsStore extends Store {
   constructor(
     private readonly workspaceService: WorkspaceService,
-    private readonly localState: WorkspaceLocalState
+    private readonly dbService: WorkspaceDBService
   ) {
     super();
   }
@@ -102,15 +103,32 @@ export class DocsStore extends Store {
   }
 
   setDocPrimaryModeSetting(id: string, mode: DocMode) {
-    return this.localState.set(`page:${id}:mode`, mode);
+    return this.updateDocConfiguration(id, { primaryMode: mode });
   }
 
   getDocPrimaryModeSetting(id: string) {
-    return this.localState.get<DocMode>(`page:${id}:mode`);
+    return this.getDocConfiguration(id)?.primaryMode;
   }
 
   watchDocPrimaryModeSetting(id: string) {
-    return this.localState.watch<DocMode>(`page:${id}:mode`);
+    return this.watchDocConfiguration(id).pipe(
+      map(config => config?.primaryMode)
+    );
+  }
+
+  updateDocConfiguration(id: string, config: Partial<DocConfiguration>) {
+    return this.dbService.db.docConfiguration.create({
+      id,
+      ...config,
+    });
+  }
+
+  getDocConfiguration(id: string) {
+    return this.dbService.db.docConfiguration.get(id);
+  }
+
+  watchDocConfiguration(id: string) {
+    return this.dbService.db.docConfiguration.get$(id);
   }
 
   waitForDocLoadReady(id: string) {

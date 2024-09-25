@@ -6,11 +6,8 @@ export { DocService } from './services/doc';
 export { DocsService } from './services/docs';
 
 import type { Framework } from '../../framework';
-import {
-  WorkspaceLocalState,
-  WorkspaceScope,
-  WorkspaceService,
-} from '../workspace';
+import { WorkspaceDBService } from '../db';
+import { WorkspaceScope, WorkspaceService } from '../workspace';
 import { Doc } from './entities/doc';
 import { DocRecord } from './entities/record';
 import { DocRecordList } from './entities/record-list';
@@ -23,7 +20,7 @@ export function configureDocModule(framework: Framework) {
   framework
     .scope(WorkspaceScope)
     .service(DocsService, [DocsStore])
-    .store(DocsStore, [WorkspaceService, WorkspaceLocalState])
+    .store(DocsStore, [WorkspaceService, WorkspaceDBService])
     .entity(DocRecord, [DocsStore])
     .entity(DocRecordList, [DocsStore])
     .scope(DocScope)
